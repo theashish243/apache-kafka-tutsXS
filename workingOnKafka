@@ -1,36 +1,43 @@
 // starting a zookeeper server
 > bin/zookeeper-server-start.sh config/zookeeper.properties
 
+
 //starting a kafka server
 > bin/kafka-server-start.sh config/server.properties
+
 
 MAIN WORK STARTS FROM HERE
 
 //create a Topic named "test"; we can use any name
 >> bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
 
+
 //now use list Topic command to get the list of topics created in red color
 >> bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
+
 // Run the PRODUCER, that will take messages into console to send the server
+
 >> bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+ ...Type a message 
+....Type another message
+
+
+// Start a CONSUMER - dumps out standard messages to standard output
+
+>> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 Type a message 
 Type another message
 
-// Start a CONSUMER - dumps out standard messages to standard output
->> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
-This is a message 
-Thsi trgvbthbvmesaijhds
 
-//Set up multi-broker cluster (not preferred if work is with only 1 node)
+//Set up MULTI-BROKER CLUSTER (not preferred if work is with only 1 node)
 basically it means expanding cluster by increasing nodes
 (here we are expanding our cluster to 3 nodes)
 create two configurations for each of the brokers/servers
 
-GO TO KAFKA FOLDER in terminal and from there type these 2 commands 
+Navigate to the KAFKA FOLDER using cd in terminal and from there type these 2 commands 
 
 cp config/server.properties config/server-1.properties
-
 cp config/server.properties config/server-2.properties
 
 Now EDIT the two files and set the following properties by going into //CONFIG folder in Kafka folder and then select each one server-1.properties and server-2.properties 
@@ -45,15 +52,17 @@ do the same ---->       config/server-2.properties:
    		 	listeners=PLAINTEXT://:9094
     			log.dirs=/tmp/kafka-logs-2
 
+
 // we already have zookeeper and our single node will be started , so now we just need to start the 2 new nodes
 
 >> bin/kafka-server-start.sh config/server-1.properties &
-
 >> bin/kafka-server-start.sh config/server-2.properties &
+
 
 // now we create a new Topic of replication factor 3
 
 >> bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 3 --partitions 1 --topic new-topic-name
+
 
 // since now we have 3 nodes, how to know which broker is doing what ?
 // so lets describe topics using "describe command"
